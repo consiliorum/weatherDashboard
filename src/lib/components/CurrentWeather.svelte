@@ -17,7 +17,7 @@
 </script>
 
 {#if weather && location && info}
-	<div class="glass-card flex flex-col p-6">
+	<div class="glass-card flex flex-col p-4 sm:p-6">
 		<div class="mb-1 flex items-center gap-2">
 			<svg class="h-4 w-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
 				<path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -28,10 +28,10 @@
 			</h2>
 		</div>
 
-		<div class="my-4 flex items-center gap-5">
-			<span class="text-7xl leading-none drop-shadow-lg">{info.icon}</span>
+		<div class="my-3 flex items-center gap-4 sm:my-4 sm:gap-5">
+			<span class="text-5xl leading-none drop-shadow-lg sm:text-7xl">{info.icon}</span>
 			<div>
-				<p class="text-6xl font-bold tracking-tighter">{Math.round(weather.temperature_2m)}<span class="text-3xl font-normal text-text-secondary">°C</span></p>
+				<p class="text-5xl font-bold tracking-tighter sm:text-6xl">{Math.round(weather.temperature_2m)}<span class="text-2xl font-normal text-text-secondary sm:text-3xl">°C</span></p>
 				<p class="mt-1 text-sm font-medium text-text-secondary">{info.description}</p>
 			</div>
 		</div>
