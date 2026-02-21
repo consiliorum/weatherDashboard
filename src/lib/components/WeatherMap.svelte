@@ -5,22 +5,28 @@
 	import type { Map, Marker } from 'leaflet';
 
 	let mapContainer: HTMLDivElement;
-	let map: Map;
-	let marker: Marker;
-	let L: typeof import('leaflet');
+	let map = $state<Map | null>(null);
+	let marker = $state<Marker | null>(null);
+	let L = $state<typeof import('leaflet') | null>(null);
 
 	onMount(async () => {
-		L = await import('leaflet');
+		const leaflet = await import('leaflet');
+		L = leaflet;
 
-		map = L.map(mapContainer).setView([48.8566, 2.3522], 5);
+		const m = leaflet.map(mapContainer, {
+			zoomControl: false
+		}).setView([48.8566, 2.3522], 5);
 
-		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-		}).addTo(map);
+		leaflet.control.zoom({ position: 'bottomright' }).addTo(m);
 
-		marker = L.marker([48.8566, 2.3522]).addTo(map);
+		leaflet.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
+		}).addTo(m);
 
-		map.on('click', (e) => {
+		marker = leaflet.marker([48.8566, 2.3522]).addTo(m);
+		map = m;
+
+		m.on('click', (e) => {
 			const { lat, lng } = e.latlng;
 			loadWeather({ name: `${lat.toFixed(2)}, ${lng.toFixed(2)}`, latitude: lat, longitude: lng });
 		});
@@ -52,6 +58,6 @@
 	/>
 </svelte:head>
 
-<div class="overflow-hidden rounded-xl shadow-lg">
+<div class="glass-card overflow-hidden">
 	<div bind:this={mapContainer} class="h-[400px] w-full"></div>
 </div>
