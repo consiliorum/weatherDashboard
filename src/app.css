@@ -77,10 +77,12 @@ html {
 	-moz-osx-font-smoothing: grayscale;
 	color-scheme: light;
 	overflow-x: hidden;
+	background-color: #f0f4f8;
 }
 
 html.dark {
 	color-scheme: dark;
+	background-color: #0b1120;
 }
 
 body {
