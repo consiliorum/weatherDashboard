@@ -6,6 +6,39 @@
 	const location = $derived($selectedLocation);
 	const info = $derived(weather ? getWeatherInfo(weather.weather_code) : null);
 
+	let copied = $state(false);
+
+	const locationString = $derived(() => {
+		if (!location) return '';
+		const lat = location.latitude;
+		const lon = location.longitude;
+		const latDir = lat >= 0 ? 'N' : 'S';
+		const lonDir = lon >= 0 ? 'E' : 'W';
+		const coords = `${Math.abs(lat).toFixed(2)}°${latDir}, ${Math.abs(lon).toFixed(2)}°${lonDir}`;
+		const name = location.name + (location.admin1 ? `, ${location.admin1}` : '') + (location.country ? `, ${location.country}` : '');
+		return `${name} (${coords})`;
+	});
+
+	async function copyLocation() {
+		try {
+			await navigator.clipboard.writeText(locationString());
+			copied = true;
+			setTimeout(() => (copied = false), 2000);
+		} catch {
+			// Fallback for older browsers
+			const textarea = document.createElement('textarea');
+			textarea.value = locationString();
+			textarea.style.position = 'fixed';
+			textarea.style.opacity = '0';
+			document.body.appendChild(textarea);
+			textarea.select();
+			document.execCommand('copy');
+			document.body.removeChild(textarea);
+			copied = true;
+			setTimeout(() => (copied = false), 2000);
+		}
+	}
+
 	const uvLevel = $derived(() => {
 		if (!weather) return { label: '', color: '' };
 		const uv = weather.uv_index;
@@ -19,13 +52,34 @@
 {#if weather && location && info}
 	<div class="glass-card flex flex-col p-4 sm:p-6">
 		<div class="mb-1 flex items-center gap-2">
-			<svg class="h-4 w-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+			<svg class="h-4 w-4 shrink-0 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
 				<path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
 				<path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
 			</svg>
 			<h2 class="text-sm font-medium text-text-secondary">
-				{location.name}{location.country ? ', ' + location.country : ''}
+				{location.name}{location.admin1 ? ', ' + location.admin1 : ''}{location.country ? ', ' + location.country : ''}
 			</h2>
+			<span class="text-xs text-text-muted">
+				{location.latitude.toFixed(2)}°{location.latitude >= 0 ? 'N' : 'S'},
+				{location.longitude.toFixed(2)}°{location.longitude >= 0 ? 'E' : 'W'}
+			</span>
+			<button
+				onclick={copyLocation}
+				class="group ml-auto flex shrink-0 items-center gap-1.5 rounded-lg border border-glass-border px-2 py-1 text-xs text-text-muted transition-all hover:border-accent/40 hover:text-accent"
+				title="Copy location to clipboard"
+			>
+				{#if copied}
+					<svg class="h-3.5 w-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<path d="M4.5 12.75l6 6 9-13.5" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+					<span class="text-green-400">Copied</span>
+				{:else}
+					<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<path d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+					<span class="hidden sm:inline">Copy</span>
+				{/if}
+			</button>
 		</div>
 
 		<div class="my-3 flex items-center gap-4 sm:my-4 sm:gap-5">
