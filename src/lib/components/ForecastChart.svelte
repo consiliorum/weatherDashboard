@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { weatherData } from '$lib/stores/weather';
+	import { theme } from '$lib/stores/theme';
 	import { getWeatherInfo } from '$lib/utils/weatherCodes';
 	import { Chart, registerables } from 'chart.js';
 	import { onMount } from 'svelte';
@@ -22,12 +23,26 @@
 		return date.toDateString() === today.toDateString();
 	}
 
+	function getChartColors(t: string) {
+		const isDark = t === 'dark';
+		return {
+			tick: isDark ? '#64748b' : '#64748b',
+			grid: isDark ? 'rgba(148, 163, 184, 0.06)' : 'rgba(148, 163, 184, 0.15)',
+			legendText: isDark ? '#94a3b8' : '#475569',
+			tooltipBg: isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+			tooltipTitle: isDark ? '#f1f5f9' : '#0f172a',
+			tooltipBody: isDark ? '#94a3b8' : '#475569',
+			tooltipBorder: isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(148, 163, 184, 0.25)'
+		};
+	}
+
 	function renderChart() {
 		if (!daily || !canvas) return;
 
 		if (chart) chart.destroy();
 
 		const labels = daily.time.map(formatDay);
+		const colors = getChartColors($theme);
 
 		chart = new Chart(canvas, {
 			type: 'bar',
@@ -60,7 +75,7 @@
 				plugins: {
 					legend: {
 						labels: {
-							color: '#94a3b8',
+							color: colors.legendText,
 							usePointStyle: true,
 							pointStyle: 'rectRounded',
 							padding: 20,
@@ -68,10 +83,10 @@
 						}
 					},
 					tooltip: {
-						backgroundColor: 'rgba(15, 23, 42, 0.95)',
-						titleColor: '#f1f5f9',
-						bodyColor: '#94a3b8',
-						borderColor: 'rgba(148, 163, 184, 0.1)',
+						backgroundColor: colors.tooltipBg,
+						titleColor: colors.tooltipTitle,
+						bodyColor: colors.tooltipBody,
+						borderColor: colors.tooltipBorder,
 						borderWidth: 1,
 						cornerRadius: 8,
 						padding: 12,
@@ -84,16 +99,16 @@
 				},
 				scales: {
 					x: {
-						ticks: { color: '#64748b', font: { size: 11, family: 'Inter' } },
-						grid: { color: 'rgba(148, 163, 184, 0.06)' }
+						ticks: { color: colors.tick, font: { size: 11, family: 'Inter' } },
+						grid: { color: colors.grid }
 					},
 					y: {
 						ticks: {
-							color: '#64748b',
+							color: colors.tick,
 							callback: (v) => v + '°',
 							font: { size: 11, family: 'Inter' }
 						},
-						grid: { color: 'rgba(148, 163, 184, 0.06)' }
+						grid: { color: colors.grid }
 					}
 				}
 			}
@@ -105,7 +120,8 @@
 	});
 
 	$effect(() => {
-		if (daily) renderChart();
+		// Re-render when data or theme changes
+		if (daily || $theme) renderChart();
 	});
 </script>
 

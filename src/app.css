@@ -1,48 +1,109 @@
 @import 'tailwindcss';
 
 @theme {
-	--color-bg-primary: #0b1120;
-	--color-bg-secondary: rgba(15, 23, 42, 0.6);
-	--color-bg-card: rgba(30, 41, 59, 0.5);
-	--color-bg-card-hover: rgba(51, 65, 85, 0.5);
-	--color-text-primary: #f1f5f9;
-	--color-text-secondary: #94a3b8;
-	--color-text-muted: #64748b;
-	--color-accent: #38bdf8;
-	--color-accent-hover: #7dd3fc;
-	--color-accent-glow: rgba(56, 189, 248, 0.15);
+	--color-bg-primary: var(--theme-bg-primary);
+	--color-bg-secondary: var(--theme-bg-secondary);
+	--color-bg-card: var(--theme-bg-card);
+	--color-bg-card-hover: var(--theme-bg-card-hover);
+	--color-text-primary: var(--theme-text-primary);
+	--color-text-secondary: var(--theme-text-secondary);
+	--color-text-muted: var(--theme-text-muted);
+	--color-accent: var(--theme-accent);
+	--color-accent-hover: var(--theme-accent-hover);
+	--color-accent-glow: var(--theme-accent-glow);
 	--color-warm: #fb923c;
 	--color-warm-glow: rgba(251, 146, 60, 0.15);
-	--color-glass-border: rgba(148, 163, 184, 0.1);
-	--color-glass-border-light: rgba(148, 163, 184, 0.2);
+	--color-glass-border: var(--theme-glass-border);
+	--color-glass-border-light: var(--theme-glass-border-light);
+}
+
+/* Light mode (default) */
+:root {
+	--theme-bg-primary: #f0f4f8;
+	--theme-bg-secondary: rgba(255, 255, 255, 0.75);
+	--theme-bg-card: rgba(226, 232, 240, 0.5);
+	--theme-bg-card-hover: rgba(203, 213, 225, 0.5);
+	--theme-text-primary: #0f172a;
+	--theme-text-secondary: #475569;
+	--theme-text-muted: #94a3b8;
+	--theme-accent: #0ea5e9;
+	--theme-accent-hover: #38bdf8;
+	--theme-accent-glow: rgba(14, 165, 233, 0.12);
+	--theme-glass-border: rgba(148, 163, 184, 0.2);
+	--theme-glass-border-light: rgba(148, 163, 184, 0.35);
+	--theme-body-bg: linear-gradient(135deg, #e8eef5 0%, #f0f4f8 40%, #e6e0f3 100%);
+	--theme-glass-shadow: rgba(0, 0, 0, 0.06);
+	--theme-glass-shadow-hover: rgba(0, 0, 0, 0.1);
+	--theme-popup-bg: #ffffff;
+	--theme-popup-text: #0f172a;
+	--theme-popup-shadow: rgba(0, 0, 0, 0.12);
+	--theme-attribution-bg: rgba(255, 255, 255, 0.85);
+	--theme-attribution-text: #94a3b8;
+	--theme-chart-tick: #64748b;
+	--theme-chart-grid: rgba(148, 163, 184, 0.12);
+	--theme-map-bg: #e8eef5;
+}
+
+/* Dark mode */
+html.dark {
+	--theme-bg-primary: #0b1120;
+	--theme-bg-secondary: rgba(15, 23, 42, 0.6);
+	--theme-bg-card: rgba(30, 41, 59, 0.5);
+	--theme-bg-card-hover: rgba(51, 65, 85, 0.5);
+	--theme-text-primary: #f1f5f9;
+	--theme-text-secondary: #94a3b8;
+	--theme-text-muted: #64748b;
+	--theme-accent: #38bdf8;
+	--theme-accent-hover: #7dd3fc;
+	--theme-accent-glow: rgba(56, 189, 248, 0.15);
+	--theme-glass-border: rgba(148, 163, 184, 0.1);
+	--theme-glass-border-light: rgba(148, 163, 184, 0.2);
+	--theme-body-bg: linear-gradient(135deg, #0b1120 0%, #0f172a 40%, #1a1040 100%);
+	--theme-glass-shadow: rgba(0, 0, 0, 0.2);
+	--theme-glass-shadow-hover: rgba(0, 0, 0, 0.3);
+	--theme-popup-bg: #1e293b;
+	--theme-popup-text: #f1f5f9;
+	--theme-popup-shadow: rgba(0, 0, 0, 0.4);
+	--theme-attribution-bg: rgba(15, 23, 42, 0.8);
+	--theme-attribution-text: #64748b;
+	--theme-chart-tick: #64748b;
+	--theme-chart-grid: rgba(148, 163, 184, 0.06);
+	--theme-map-bg: #0b1120;
 }
 
 html {
 	font-family: 'Inter', system-ui, -apple-system, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	color-scheme: light;
+}
+
+html.dark {
+	color-scheme: dark;
 }
 
 body {
-	background: linear-gradient(135deg, #0b1120 0%, #0f172a 40%, #1a1040 100%);
+	background: var(--theme-body-bg);
 	background-attachment: fixed;
-	color: var(--color-text-primary);
+	color: var(--theme-text-primary);
 	min-height: 100vh;
+	transition: background 0.4s ease, color 0.3s ease;
 }
 
 /* Glass morphism card base */
 .glass-card {
-	background: var(--color-bg-secondary);
+	background: var(--theme-bg-secondary);
 	backdrop-filter: blur(20px);
 	-webkit-backdrop-filter: blur(20px);
-	border: 1px solid var(--color-glass-border);
+	border: 1px solid var(--theme-glass-border);
 	border-radius: 1rem;
-	transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	box-shadow: 0 4px 16px var(--theme-glass-shadow);
+	transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .glass-card:hover {
-	border-color: var(--color-glass-border-light);
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+	border-color: var(--theme-glass-border-light);
+	box-shadow: 0 8px 32px var(--theme-glass-shadow-hover);
 }
 
 /* Custom scrollbar */
@@ -55,12 +116,12 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-	background: var(--color-glass-border-light);
+	background: var(--theme-glass-border-light);
 	border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-	background: var(--color-text-muted);
+	background: var(--theme-text-muted);
 }
 
 /* Fade-in animation */
@@ -92,25 +153,25 @@ body {
 
 /* Pulse glow for loading */
 @keyframes pulseGlow {
-	0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
-	50% { box-shadow: 0 0 20px 4px rgba(56, 189, 248, 0.2); }
+	0%, 100% { box-shadow: 0 0 0 0 var(--theme-accent-glow); }
+	50% { box-shadow: 0 0 20px 4px var(--theme-accent-glow); }
 }
 
 .pulse-glow {
 	animation: pulseGlow 2s ease-in-out infinite;
 }
 
-/* Leaflet overrides for dark theme */
+/* Leaflet overrides - theme aware */
 .leaflet-popup-content-wrapper {
-	background: #1e293b !important;
-	color: #f1f5f9 !important;
+	background: var(--theme-popup-bg) !important;
+	color: var(--theme-popup-text) !important;
 	border-radius: 0.75rem !important;
-	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4) !important;
-	border: 1px solid rgba(148, 163, 184, 0.1) !important;
+	box-shadow: 0 10px 40px var(--theme-popup-shadow) !important;
+	border: 1px solid var(--theme-glass-border) !important;
 }
 
 .leaflet-popup-tip {
-	background: #1e293b !important;
+	background: var(--theme-popup-bg) !important;
 }
 
 .leaflet-popup-content {
@@ -120,11 +181,11 @@ body {
 }
 
 .leaflet-control-attribution {
-	background: rgba(15, 23, 42, 0.8) !important;
-	color: #64748b !important;
+	background: var(--theme-attribution-bg) !important;
+	color: var(--theme-attribution-text) !important;
 	font-size: 0.625rem !important;
 }
 
 .leaflet-control-attribution a {
-	color: #94a3b8 !important;
+	color: var(--theme-text-secondary) !important;
 }

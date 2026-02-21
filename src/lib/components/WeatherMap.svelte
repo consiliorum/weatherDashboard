@@ -1,13 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { selectedLocation, weatherData, loadWeather } from '$lib/stores/weather';
+	import { theme } from '$lib/stores/theme';
 	import { getWeatherInfo } from '$lib/utils/weatherCodes';
-	import type { Map, Marker } from 'leaflet';
+	import type { Map, Marker, TileLayer } from 'leaflet';
 
 	let mapContainer: HTMLDivElement;
 	let map = $state<Map | null>(null);
 	let marker = $state<Marker | null>(null);
+	let currentTileLayer: TileLayer | null = null;
 	let L = $state<typeof import('leaflet') | null>(null);
+
+	const TILES = {
+		dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+		light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+	};
 
 	onMount(async () => {
 		const leaflet = await import('leaflet');
@@ -19,7 +26,8 @@
 
 		leaflet.control.zoom({ position: 'bottomright' }).addTo(m);
 
-		leaflet.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+		const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+		currentTileLayer = leaflet.tileLayer(TILES[currentTheme], {
 			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
 		}).addTo(m);
 
@@ -30,6 +38,17 @@
 			const { lat, lng } = e.latlng;
 			loadWeather({ name: `${lat.toFixed(2)}, ${lng.toFixed(2)}`, latitude: lat, longitude: lng });
 		});
+	});
+
+	// Swap tiles when theme changes
+	$effect(() => {
+		const t = $theme;
+		if (map && currentTileLayer && L) {
+			map.removeLayer(currentTileLayer);
+			currentTileLayer = L.tileLayer(TILES[t], {
+				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
+			}).addTo(map);
+		}
 	});
 
 	$effect(() => {
@@ -59,5 +78,5 @@
 </svelte:head>
 
 <div class="glass-card overflow-hidden">
-	<div bind:this={mapContainer} class="h-[400px] w-full"></div>
+	<div bind:this={mapContainer} class="h-[400px] w-full transition-colors duration-300" style="background-color: var(--theme-map-bg);"></div>
 </div>

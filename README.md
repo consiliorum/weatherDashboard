@@ -2,9 +2,12 @@
 
 A real-time weather dashboard built with SvelteKit, featuring interactive maps, 7-day forecasts, and hourly breakdowns. Powered entirely by free APIs — no API keys required.
 
+**[Live Demo](https://weatherdashboard-bif.pages.dev)**
+
 ![SvelteKit](https://img.shields.io/badge/SvelteKit-FF3E00?style=flat&logo=svelte&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
+![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-F38020?style=flat&logo=cloudflare&logoColor=white)
 
 ## Features
 
@@ -12,9 +15,10 @@ A real-time weather dashboard built with SvelteKit, featuring interactive maps, 
 - **Current Conditions** — Temperature, feels-like, humidity, wind speed, and UV index
 - **7-Day Forecast** — Daily high/low bar chart with weather icons and precipitation probability
 - **Hourly Forecast** — Scrollable 24-hour breakdown with temperatures and conditions
-- **Interactive Map** — Leaflet map with OpenStreetMap tiles; click anywhere to load weather for that location
+- **Interactive Map** — Leaflet map with CARTO tiles; click anywhere to load weather for that location
 - **Geolocation** — Automatically detects your location on first visit
-- **Dark Theme** — Slate-toned dark UI built with Tailwind CSS
+- **Light & Dark Mode** — Toggle between themes, auto-detects browser preference, persists across sessions
+- **Glass Morphism UI** — Modern translucent card design with backdrop blur and smooth animations
 
 ## Tech Stack
 
@@ -23,9 +27,10 @@ A real-time weather dashboard built with SvelteKit, featuring interactive maps, 
 | Framework | SvelteKit + TypeScript |
 | Weather Data | [Open-Meteo API](https://open-meteo.com/) (free, no key) |
 | Geocoding | [Open-Meteo Geocoding](https://open-meteo.com/en/docs/geocoding-api) |
-| Maps | [Leaflet](https://leafletjs.com/) + OpenStreetMap |
+| Maps | [Leaflet](https://leafletjs.com/) + CARTO tiles |
 | Charts | [Chart.js](https://www.chartjs.org/) |
 | Styling | [Tailwind CSS](https://tailwindcss.com/) v4 |
+| Hosting | [Cloudflare Pages](https://pages.cloudflare.com/) |
 
 ## Getting Started
 
@@ -65,7 +70,8 @@ src/
 │   │   ├── HourlyForecast.svelte
 │   │   └── WeatherMap.svelte   # Interactive Leaflet map
 │   ├── stores/
-│   │   └── weather.ts          # Svelte stores for app state
+│   │   ├── weather.ts          # Svelte stores for app state
+│   │   └── theme.ts            # Light/dark theme store
 │   ├── types/
 │   │   └── weather.ts          # TypeScript interfaces
 │   └── utils/
