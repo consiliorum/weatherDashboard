@@ -134,9 +134,9 @@
 			<h3 class="text-base font-semibold">7-Day Forecast</h3>
 		</div>
 
-		<div class="custom-scrollbar mb-5 flex gap-2 overflow-x-auto pb-2">
+		<div class="mb-5 grid grid-cols-7 gap-2">
 			{#each daily.time as day, i}
-				<div class="flex min-w-[85px] flex-col items-center gap-1 rounded-xl px-3 py-3 transition-colors {isToday(day) ? 'bg-accent/10 ring-1 ring-accent/30' : 'bg-bg-card hover:bg-bg-card-hover'}">
+				<div class="flex flex-col items-center gap-1 rounded-xl px-1 py-3 transition-colors {isToday(day) ? 'bg-accent/10 ring-1 ring-accent/30' : 'bg-bg-card hover:bg-bg-card-hover'}">
 					<span class="text-xs font-medium {isToday(day) ? 'text-accent' : 'text-text-muted'}">
 						{isToday(day) ? 'Today' : formatDay(day).split(',')[0]}
 					</span>
