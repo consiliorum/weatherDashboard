@@ -14,9 +14,7 @@
 		const lon = location.longitude;
 		const latDir = lat >= 0 ? 'N' : 'S';
 		const lonDir = lon >= 0 ? 'E' : 'W';
-		const coords = `${Math.abs(lat).toFixed(2)}°${latDir}, ${Math.abs(lon).toFixed(2)}°${lonDir}`;
-		const name = location.name + (location.admin1 ? `, ${location.admin1}` : '') + (location.country ? `, ${location.country}` : '');
-		return `${name} (${coords})`;
+		return `${Math.abs(lat).toFixed(2)}°${latDir}, ${Math.abs(lon).toFixed(2)}°${lonDir}`;
 	});
 
 	async function copyLocation() {

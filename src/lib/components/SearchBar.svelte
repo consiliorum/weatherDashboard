@@ -9,9 +9,28 @@
 	let isFocused = $state(false);
 	let debounceTimer: ReturnType<typeof setTimeout>;
 
+	function parseCoordinates(input: string): { latitude: number; longitude: number } | null {
+		const match = input.trim().match(
+			/^(-?\d+(?:\.\d+)?)\s*°?\s*([NSns])?\s*[,\s]\s*(-?\d+(?:\.\d+)?)\s*°?\s*([EWew])?$/
+		);
+		if (!match) return null;
+		let lat = parseFloat(match[1]);
+		let lon = parseFloat(match[3]);
+		if (match[2] && match[2].toUpperCase() === 'S') lat = -Math.abs(lat);
+		if (match[4] && match[4].toUpperCase() === 'W') lon = -Math.abs(lon);
+		if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
+		return { latitude: lat, longitude: lon };
+	}
+
 	function handleInput() {
 		clearTimeout(debounceTimer);
 		if (query.length < 2) {
+			results = [];
+			showDropdown = false;
+			return;
+		}
+		const coords = parseCoordinates(query);
+		if (coords) {
 			results = [];
 			showDropdown = false;
 			return;
@@ -34,6 +53,17 @@
 		loadWeather(location);
 	}
 
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key !== 'Enter') return;
+		const coords = parseCoordinates(query);
+		if (coords) {
+			const label = `${Math.abs(coords.latitude).toFixed(2)}°${coords.latitude >= 0 ? 'N' : 'S'}, ${Math.abs(coords.longitude).toFixed(2)}°${coords.longitude >= 0 ? 'E' : 'W'}`;
+			loadWeather({ name: label, latitude: coords.latitude, longitude: coords.longitude });
+			showDropdown = false;
+			results = [];
+		}
+	}
+
 	function handleBlur() {
 		setTimeout(() => {
 			showDropdown = false;
@@ -54,8 +84,9 @@
 		bind:value={query}
 		oninput={handleInput}
 		onblur={handleBlur}
+		onkeydown={handleKeydown}
 		onfocus={() => { isFocused = true; results.length > 0 && (showDropdown = true); }}
-		placeholder="Search for a city..."
+		placeholder="Search city or coordinates..."
 		class="w-full rounded-xl border border-glass-border bg-bg-secondary py-2.5 pl-10 pr-4 text-sm text-text-primary placeholder-text-muted backdrop-blur-xl outline-none transition-all duration-300 focus:border-accent/40 focus:shadow-[0_0_20px_rgba(56,189,248,0.08)]"
 	/>
 	{#if showDropdown}
