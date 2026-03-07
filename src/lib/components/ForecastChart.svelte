@@ -134,24 +134,24 @@
 			<h3 class="text-base font-semibold">7-Day Forecast</h3>
 		</div>
 
-		<div class="mb-5 grid grid-cols-7 gap-2">
+		<div class="custom-scrollbar mb-5 flex gap-2 overflow-x-auto pb-2 sm:grid sm:grid-cols-7 sm:overflow-visible sm:pb-0">
 			{#each daily.time as day, i}
-				<div class="flex flex-col items-center gap-1 rounded-xl px-1 py-3 transition-colors {isToday(day) ? 'bg-accent/10 ring-1 ring-accent/30' : 'bg-bg-card hover:bg-bg-card-hover'}">
+				<div class="flex min-w-[52px] shrink-0 flex-col items-center gap-1 rounded-xl px-1 py-3 transition-colors sm:min-w-0 {isToday(day) ? 'bg-accent/10 ring-1 ring-accent/30' : 'bg-bg-card hover:bg-bg-card-hover'}">
 					<span class="text-xs font-medium {isToday(day) ? 'text-accent' : 'text-text-muted'}">
 						{isToday(day) ? 'Today' : formatDay(day).split(',')[0]}
 					</span>
-					<span class="text-2xl">{getWeatherInfo(daily.weather_code[i]).icon}</span>
-					<div class="flex items-center gap-1 text-xs">
-						<span class="font-semibold text-warm">{Math.round(daily.temperature_2m_max[i])}°</span>
-						<span class="text-text-muted">/</span>
-						<span class="text-text-secondary">{Math.round(daily.temperature_2m_min[i])}°</span>
+					<span class="text-xl sm:text-2xl">{getWeatherInfo(daily.weather_code[i]).icon}</span>
+					<div class="flex flex-col items-center sm:flex-row sm:gap-1">
+						<span class="text-[10px] font-semibold text-warm sm:text-xs">{Math.round(daily.temperature_2m_max[i])}°</span>
+						<span class="hidden text-xs text-text-muted sm:inline">/</span>
+						<span class="text-[10px] text-text-secondary sm:text-xs">{Math.round(daily.temperature_2m_min[i])}°</span>
 					</div>
-					<span class="mt-0.5 text-[10px] text-text-muted">{daily.precipitation_probability_max[i]}% rain</span>
+					<span class="mt-0.5 text-[10px] text-text-muted">{daily.precipitation_probability_max[i]}%</span>
 				</div>
 			{/each}
 		</div>
 
-		<div class="h-56">
+		<div class="h-44 sm:h-56">
 			<canvas bind:this={canvas}></canvas>
 		</div>
 	</div>

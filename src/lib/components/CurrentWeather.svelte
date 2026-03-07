@@ -56,10 +56,10 @@
 				<path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
 				<path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
 			</svg>
-			<h2 class="text-sm font-medium text-text-secondary">
+			<h2 class="min-w-0 flex-1 truncate text-sm font-medium text-text-secondary">
 				{location.name}{location.admin1 ? ', ' + location.admin1 : ''}{location.country ? ', ' + location.country : ''}
 			</h2>
-			<span class="text-xs text-text-muted">
+			<span class="hidden text-xs text-text-muted sm:inline">
 				{location.latitude.toFixed(2)}°{location.latitude >= 0 ? 'N' : 'S'},
 				{location.longitude.toFixed(2)}°{location.longitude >= 0 ? 'E' : 'W'}
 			</span>

@@ -104,7 +104,7 @@
 			<p class="mt-2 text-sm text-text-secondary">Please try again or search for a different city.</p>
 		</div>
 	{:else if $weatherData}
-		<div class="stagger-children grid gap-6 lg:grid-cols-2">
+		<div class="stagger-children grid gap-6 md:grid-cols-2">
 			<CurrentWeather />
 			<WeatherMap />
 		</div>
