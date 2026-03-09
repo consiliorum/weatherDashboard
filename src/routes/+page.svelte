@@ -1,27 +1,49 @@
 <script lang="ts">
 	import '../app.css';
 	import { onMount } from 'svelte';
-	import { loadWeather, loading, error, weatherData } from '$lib/stores/weather';
+	import { page } from '$app/stores';
+	import { get } from 'svelte/store';
+	import { loadWeather, loading, error, weatherData, selectedLocation } from '$lib/stores/weather';
 	import { theme, toggleTheme } from '$lib/stores/theme';
+	import { unitSystem, toggleUnits } from '$lib/stores/units';
+	import { isNightAt } from '$lib/utils/dayNight';
 	import SearchBar from '$lib/components/SearchBar.svelte';
 	import CurrentWeather from '$lib/components/CurrentWeather.svelte';
 	import ForecastChart from '$lib/components/ForecastChart.svelte';
 	import HourlyForecast from '$lib/components/HourlyForecast.svelte';
 	import WeatherMap from '$lib/components/WeatherMap.svelte';
 
+	let shared = $state(false);
+
+	function shareLocation() {
+		const loc = $selectedLocation;
+		if (!loc) return;
+		const url = new URL(window.location.href);
+		url.search = '';
+		url.searchParams.set('lat', loc.latitude.toString());
+		url.searchParams.set('lon', loc.longitude.toString());
+		url.searchParams.set('name', loc.name + (loc.admin1 ? `, ${loc.admin1}` : '') + (loc.country ? `, ${loc.country}` : ''));
+		navigator.clipboard.writeText(url.toString()).then(() => {
+			shared = true;
+			setTimeout(() => (shared = false), 2000);
+		});
+	}
+
 	onMount(() => {
+		const searchParams = get(page).url.searchParams;
+		const lat = parseFloat(searchParams.get('lat') ?? '');
+		const lon = parseFloat(searchParams.get('lon') ?? '');
+		const name = searchParams.get('name') ?? '';
+
+		if (!isNaN(lat) && !isNaN(lon)) {
+			loadWeather({ name: name || `${lat}, ${lon}`, latitude: lat, longitude: lon });
+			return;
+		}
+
 		if ('geolocation' in navigator) {
 			navigator.geolocation.getCurrentPosition(
-				(pos) => {
-					loadWeather({
-						name: 'My Location',
-						latitude: pos.coords.latitude,
-						longitude: pos.coords.longitude
-					});
-				},
-				() => {
-					loadWeather({ name: 'London', latitude: 51.5074, longitude: -0.1278, country: 'UK' });
-				}
+				(pos) => loadWeather({ name: 'My Location', latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
+				() => loadWeather({ name: 'London', latitude: 51.5074, longitude: -0.1278, country: 'UK' })
 			);
 		} else {
 			loadWeather({ name: 'London', latitude: 51.5074, longitude: -0.1278, country: 'UK' });
@@ -44,7 +66,8 @@
 					<span>
 						{#if $weatherData}
 							{@const code = $weatherData.current.weather_code}
-							{#if code === 0}&#9728;&#65039;{:else if code <= 3}&#9925;{:else}&#127326;&#65039;{/if}
+							{@const night = $weatherData.daily.sunrise[0] ? isNightAt($weatherData.timezone, $weatherData.daily.sunrise[0], $weatherData.daily.sunset[0]) : false}
+							{#if code === 0}{night ? "🌙" : "☀️"}{:else if code <= 3}{night ? "🌙" : "⛅"}{:else}&#127326;&#65039;{/if}
 						{:else}
 							&#127780;&#65039;
 						{/if}
@@ -71,8 +94,31 @@
 				{/if}
 			</button>
 		</div>
-		<div class="flex items-center gap-3">
+		<div class="flex items-center gap-2">
 			<SearchBar />
+			<button
+				onclick={toggleUnits}
+				class="flex h-10 items-center justify-center rounded-xl border border-glass-border bg-bg-secondary px-3 text-sm font-medium text-text-secondary backdrop-blur-xl transition-all duration-300 hover:border-glass-border-light hover:text-accent hover:shadow-lg"
+				title="Toggle units"
+			>
+				{$unitSystem === 'metric' ? '°C' : '°F'}
+			</button>
+			<button
+				onclick={shareLocation}
+				disabled={!$selectedLocation}
+				class="flex h-10 w-10 items-center justify-center rounded-xl border border-glass-border bg-bg-secondary backdrop-blur-xl transition-all duration-300 hover:border-glass-border-light hover:shadow-lg disabled:opacity-40"
+				title="Copy shareable link"
+			>
+				{#if shared}
+					<svg class="h-4 w-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<path d="M4.5 12.75l6 6 9-13.5" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+				{:else}
+					<svg class="h-4 w-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<path d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+				{/if}
+			</button>
 			<button
 				onclick={toggleTheme}
 				class="hidden h-10 w-10 items-center justify-center rounded-xl border border-glass-border bg-bg-secondary backdrop-blur-xl transition-all duration-300 hover:border-glass-border-light hover:shadow-lg sm:flex"

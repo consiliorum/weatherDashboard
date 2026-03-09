@@ -7,6 +7,7 @@
 	let results = $state<Location[]>([]);
 	let showDropdown = $state(false);
 	let isFocused = $state(false);
+	let geolocating = $state(false);
 	let debounceTimer: ReturnType<typeof setTimeout>;
 
 	function parseCoordinates(input: string): { latitude: number; longitude: number } | null {
@@ -70,6 +71,19 @@
 			isFocused = false;
 		}, 200);
 	}
+
+	function geolocate() {
+		if (!('geolocation' in navigator) || geolocating) return;
+		geolocating = true;
+		query = '';
+		navigator.geolocation.getCurrentPosition(
+			(pos) => {
+				loadWeather({ name: 'My Location', latitude: pos.coords.latitude, longitude: pos.coords.longitude });
+				geolocating = false;
+			},
+			() => { geolocating = false; }
+		);
+	}
 </script>
 
 <div class="relative w-full sm:max-w-sm">
@@ -87,8 +101,26 @@
 		onkeydown={handleKeydown}
 		onfocus={() => { isFocused = true; results.length > 0 && (showDropdown = true); }}
 		placeholder="Search city or coordinates..."
-		class="w-full rounded-xl border border-glass-border bg-bg-secondary py-2.5 pl-10 pr-4 text-sm text-text-primary placeholder-text-muted backdrop-blur-xl outline-none transition-all duration-300 focus:border-accent/40 focus:shadow-[0_0_20px_rgba(56,189,248,0.08)]"
+		class="w-full rounded-xl border border-glass-border bg-bg-secondary py-2.5 pl-10 pr-10 text-sm text-text-primary placeholder-text-muted backdrop-blur-xl outline-none transition-all duration-300 focus:border-accent/40 focus:shadow-[0_0_20px_rgba(56,189,248,0.08)]"
 	/>
+	<button
+		onclick={geolocate}
+		disabled={geolocating}
+		class="absolute inset-y-0 right-0 flex items-center pr-3 text-text-muted transition-colors hover:text-accent disabled:opacity-50"
+		title="Use my location"
+	>
+		{#if geolocating}
+			<svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+				<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+				<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+			</svg>
+		{:else}
+			<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+				<path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7Z" stroke-linecap="round" stroke-linejoin="round"/>
+				<circle cx="12" cy="9" r="2.5" stroke-linecap="round"/>
+			</svg>
+		{/if}
+	</button>
 	{#if showDropdown}
 		<ul class="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-glass-border bg-bg-secondary shadow-2xl backdrop-blur-xl">
 			{#each results as location, i}

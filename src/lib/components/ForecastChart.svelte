@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { weatherData } from '$lib/stores/weather';
+	import WeatherIcon from './WeatherIcon.svelte';
 	import { theme } from '$lib/stores/theme';
 	import { getWeatherInfo } from '$lib/utils/weatherCodes';
 	import { Chart, registerables } from 'chart.js';
 	import { onMount } from 'svelte';
+	import { unitSystem, convertTemp, tempUnit } from '$lib/stores/units';
 
 	Chart.register(...registerables);
 
@@ -43,6 +45,8 @@
 
 		const labels = daily.time.map(formatDay);
 		const colors = getChartColors($theme);
+		const units = $unitSystem;
+		const tUnit = tempUnit(units);
 
 		chart = new Chart(canvas, {
 			type: 'line',
@@ -50,8 +54,8 @@
 				labels,
 				datasets: [
 					{
-						label: 'High °C',
-						data: daily.temperature_2m_max,
+						label: `High ${tUnit}`,
+						data: daily.temperature_2m_max.map((t) => convertTemp(t, units)),
 						borderColor: 'rgba(251, 146, 60, 0.8)',
 						backgroundColor: 'rgba(251, 146, 60, 0.15)',
 						borderWidth: 2,
@@ -62,8 +66,8 @@
 						fill: false
 					},
 					{
-						label: 'Low °C',
-						data: daily.temperature_2m_min,
+						label: `Low ${tUnit}`,
+						data: daily.temperature_2m_min.map((t) => convertTemp(t, units)),
 						borderColor: 'rgba(56, 189, 248, 0.7)',
 						backgroundColor: 'rgba(56, 189, 248, 0.1)',
 						borderWidth: 2,
@@ -99,7 +103,7 @@
 						titleFont: { family: 'Inter', weight: 'bold' as const },
 						bodyFont: { family: 'Inter' },
 						callbacks: {
-							label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y}°C`
+							label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y}${tUnit}`
 						}
 					}
 				},
@@ -111,7 +115,7 @@
 					y: {
 						ticks: {
 							color: colors.tick,
-							callback: (v) => v + '°',
+							callback: (v) => v + tUnit,
 							font: { size: 11, family: 'Inter' }
 						},
 						grid: { color: colors.grid }
@@ -126,8 +130,7 @@
 	});
 
 	$effect(() => {
-		// Re-render when data or theme changes
-		if (daily || $theme) renderChart();
+		if (daily || $theme || $unitSystem) renderChart();
 	});
 </script>
 
@@ -146,11 +149,11 @@
 					<span class="text-xs font-medium {isToday(day) ? 'text-accent' : 'text-text-muted'}">
 						{isToday(day) ? 'Today' : formatDay(day).split(',')[0]}
 					</span>
-					<span class="text-xl sm:text-2xl">{getWeatherInfo(daily.weather_code[i]).icon}</span>
+					<span class="text-xl sm:text-2xl"><WeatherIcon code={daily.weather_code[i]} /></span>
 					<div class="flex flex-col items-center sm:flex-row sm:gap-1">
-						<span class="text-[10px] text-text-secondary sm:text-xs">{Math.round(daily.temperature_2m_min[i])}°</span>
+						<span class="text-[10px] text-text-secondary sm:text-xs">{convertTemp(daily.temperature_2m_min[i], $unitSystem)}°</span>
 						<span class="hidden text-xs text-text-muted sm:inline">/</span>
-						<span class="text-[10px] font-semibold text-warm sm:text-xs">{Math.round(daily.temperature_2m_max[i])}°</span>
+						<span class="text-[10px] font-semibold text-warm sm:text-xs">{convertTemp(daily.temperature_2m_max[i], $unitSystem)}°</span>
 					</div>
 					</div>
 			{/each}

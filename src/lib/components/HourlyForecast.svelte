@@ -1,20 +1,30 @@
 <script lang="ts">
 	import { weatherData } from '$lib/stores/weather';
 	import { getWeatherInfo } from '$lib/utils/weatherCodes';
+	import { isHourNight } from '$lib/utils/dayNight';
+	import WeatherIcon from './WeatherIcon.svelte';
+	import { unitSystem, convertTemp, tempUnit } from '$lib/stores/units';
 
 	const hourly = $derived($weatherData?.hourly);
+	const daily = $derived($weatherData?.daily);
 
 	const next24Hours = $derived(() => {
 		if (!hourly) return [];
 		const now = new Date();
 		const currentHourIndex = hourly.time.findIndex((t) => new Date(t) >= now);
 		const start = Math.max(0, currentHourIndex);
-		return hourly.time.slice(start, start + 24).map((time, i) => ({
-			time: new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true }),
-			temp: Math.round(hourly.temperature_2m[start + i]),
-			icon: getWeatherInfo(hourly.weather_code[start + i]).icon,
-			isNow: i === 0
-		}));
+		return hourly.time.slice(start, start + 24).map((time, i) => {
+			const night = daily?.sunrise && daily?.sunset
+				? isHourNight(time, daily.time, daily.sunrise, daily.sunset)
+				: false;
+			return {
+				time: new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true }),
+				temp: Math.round(hourly.temperature_2m[start + i]),
+				code: hourly.weather_code[start + i],
+				night,
+				isNow: i === 0
+			};
+		});
 	});
 </script>
 
@@ -32,8 +42,8 @@
 					<span class="text-xs font-medium {hour.isNow ? 'text-accent' : 'text-text-muted'}">
 						{hour.isNow ? 'Now' : hour.time}
 					</span>
-					<span class="my-0.5 text-xl">{hour.icon}</span>
-					<span class="text-sm font-semibold">{hour.temp}°</span>
+					<span class="my-0.5 text-xl"><WeatherIcon code={hour.code} isNight={hour.night} /></span>
+					<span class="text-sm font-semibold">{convertTemp(hour.temp, $unitSystem)}°</span>
 				</div>
 			{/each}
 		</div>

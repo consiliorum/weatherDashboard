@@ -1,10 +1,24 @@
 <script lang="ts">
 	import { weatherData, selectedLocation } from '$lib/stores/weather';
 	import { getWeatherInfo } from '$lib/utils/weatherCodes';
+	import { isNightAt } from '$lib/utils/dayNight';
+	import WeatherIcon from './WeatherIcon.svelte';
+	import { tweened } from 'svelte/motion';
+	import { cubicOut } from 'svelte/easing';
+	import { unitSystem, convertTemp, tempUnit, convertSpeed, speedUnit } from '$lib/stores/units';
 
 	const weather = $derived($weatherData?.current);
 	const location = $derived($selectedLocation);
-	const info = $derived(weather ? getWeatherInfo(weather.weather_code) : null);
+	const night = $derived(
+		$weatherData?.timezone && $weatherData.daily.sunrise[0] && $weatherData.daily.sunset[0]
+			? isNightAt($weatherData.timezone, $weatherData.daily.sunrise[0], $weatherData.daily.sunset[0])
+			: false
+	);
+	const info = $derived(weather ? getWeatherInfo(weather.weather_code, night) : null);
+
+	const displayTemp = tweened(0, { duration: 700, easing: cubicOut });
+	$effect(() => { if (weather) displayTemp.set(weather.temperature_2m); });
+
 
 	let copied = $state(false);
 
@@ -81,9 +95,9 @@
 		</div>
 
 		<div class="my-3 flex items-center gap-4 sm:my-4 sm:gap-5">
-			<span class="text-5xl leading-none drop-shadow-lg sm:text-7xl">{info.icon}</span>
+			<span class="text-5xl leading-none drop-shadow-lg sm:text-7xl"><WeatherIcon code={weather.weather_code} isNight={night} /></span>
 			<div>
-				<p class="text-5xl font-bold tracking-tighter sm:text-6xl">{Math.round(weather.temperature_2m)}<span class="text-2xl font-normal text-text-secondary sm:text-3xl">°C</span></p>
+				<p class="text-5xl font-bold tracking-tighter sm:text-6xl">{convertTemp($displayTemp, $unitSystem)}<span class="text-2xl font-normal text-text-secondary sm:text-3xl">{tempUnit($unitSystem)}</span></p>
 				<p class="mt-1 text-sm font-medium text-text-secondary">{info.description}</p>
 			</div>
 		</div>
@@ -96,7 +110,7 @@
 					</svg>
 					<p class="text-xs text-text-muted">Feels like</p>
 				</div>
-				<p class="text-lg font-semibold">{Math.round(weather.apparent_temperature)}°C</p>
+				<p class="text-lg font-semibold">{convertTemp(weather.apparent_temperature, $unitSystem)}{tempUnit($unitSystem)}</p>
 			</div>
 			<div class="rounded-xl bg-bg-card p-3 transition-colors hover:bg-bg-card-hover">
 				<div class="mb-1 flex items-center gap-1.5">
@@ -114,7 +128,7 @@
 					</svg>
 					<p class="text-xs text-text-muted">Wind</p>
 				</div>
-				<p class="text-lg font-semibold">{weather.wind_speed_10m}<span class="text-sm text-text-secondary"> km/h</span></p>
+				<p class="text-lg font-semibold">{convertSpeed(weather.wind_speed_10m, $unitSystem)}<span class="text-sm text-text-secondary"> {speedUnit($unitSystem)}</span></p>
 			</div>
 			<div class="rounded-xl bg-bg-card p-3 transition-colors hover:bg-bg-card-hover">
 				<div class="mb-1 flex items-center gap-1.5">
