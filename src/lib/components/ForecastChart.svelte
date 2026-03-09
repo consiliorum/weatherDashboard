@@ -45,27 +45,33 @@
 		const colors = getChartColors($theme);
 
 		chart = new Chart(canvas, {
-			type: 'bar',
+			type: 'line',
 			data: {
 				labels,
 				datasets: [
 					{
 						label: 'High °C',
 						data: daily.temperature_2m_max,
-						backgroundColor: 'rgba(251, 146, 60, 0.6)',
 						borderColor: 'rgba(251, 146, 60, 0.8)',
-						borderWidth: 1,
-						borderRadius: 6,
-						borderSkipped: false
+						backgroundColor: 'rgba(251, 146, 60, 0.15)',
+						borderWidth: 2,
+						pointBackgroundColor: 'rgba(251, 146, 60, 0.9)',
+						pointRadius: 4,
+						pointHoverRadius: 6,
+						tension: 0.4,
+						fill: false
 					},
 					{
 						label: 'Low °C',
 						data: daily.temperature_2m_min,
-						backgroundColor: 'rgba(56, 189, 248, 0.5)',
 						borderColor: 'rgba(56, 189, 248, 0.7)',
-						borderWidth: 1,
-						borderRadius: 6,
-						borderSkipped: false
+						backgroundColor: 'rgba(56, 189, 248, 0.1)',
+						borderWidth: 2,
+						pointBackgroundColor: 'rgba(56, 189, 248, 0.9)',
+						pointRadius: 4,
+						pointHoverRadius: 6,
+						tension: 0.4,
+						fill: false
 					}
 				]
 			},
@@ -142,12 +148,11 @@
 					</span>
 					<span class="text-xl sm:text-2xl">{getWeatherInfo(daily.weather_code[i]).icon}</span>
 					<div class="flex flex-col items-center sm:flex-row sm:gap-1">
-						<span class="text-[10px] font-semibold text-warm sm:text-xs">{Math.round(daily.temperature_2m_max[i])}°</span>
-						<span class="hidden text-xs text-text-muted sm:inline">/</span>
 						<span class="text-[10px] text-text-secondary sm:text-xs">{Math.round(daily.temperature_2m_min[i])}°</span>
+						<span class="hidden text-xs text-text-muted sm:inline">/</span>
+						<span class="text-[10px] font-semibold text-warm sm:text-xs">{Math.round(daily.temperature_2m_max[i])}°</span>
 					</div>
-					<span class="mt-0.5 text-[10px] text-text-muted">{daily.precipitation_probability_max[i]}%</span>
-				</div>
+					</div>
 			{/each}
 		</div>
 

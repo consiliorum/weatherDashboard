@@ -109,7 +109,7 @@
 			</div>
 			<div class="rounded-xl bg-bg-card p-3 transition-colors hover:bg-bg-card-hover">
 				<div class="mb-1 flex items-center gap-1.5">
-					<svg class="h-3.5 w-3.5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+					<svg class="h-3.5 w-3.5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="transform: rotate({(weather.wind_direction_10m - 90)}deg)">
 						<path d="M6 12h12M6 12l3-3m-3 3l3 3" stroke-linecap="round" stroke-linejoin="round" />
 					</svg>
 					<p class="text-xs text-text-muted">Wind</p>
