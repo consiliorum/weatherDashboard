@@ -49,10 +49,21 @@
 					<div class="absolute top-1/2 h-3 w-1 -translate-y-1/2 rounded-full bg-white shadow"
 						style="left:calc({barPct}% - 1px)">
 					</div>
+					<!-- EU AQI threshold ticks at 20, 40, 60, 80, 100 (out of 150) -->
+					{#each [20,40,60,80,100] as t}
+						<div class="absolute top-full mt-0.5 h-1 w-px bg-current opacity-20"
+							style="left:{(t/150*100).toFixed(2)}%">
+						</div>
+					{/each}
 				</div>
-				<div class="mt-1 flex justify-between text-[9px] text-text-muted">
-					<span>Good</span>
-					<span>Extremely Poor</span>
+				<div class="relative mt-2.5 h-3 text-[9px] text-text-muted">
+					<span class="absolute left-0 -translate-x-1/2">0</span>
+					<span class="absolute -translate-x-1/2" style="left:13.33%">20</span>
+					<span class="absolute -translate-x-1/2" style="left:26.67%">40</span>
+					<span class="absolute -translate-x-1/2" style="left:40%">60</span>
+					<span class="absolute -translate-x-1/2" style="left:53.33%">80</span>
+					<span class="absolute -translate-x-1/2" style="left:66.67%">100</span>
+					<span class="absolute right-0 translate-x-1/2">150+</span>
 				</div>
 			</div>
 		{/if}

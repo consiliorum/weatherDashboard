@@ -140,9 +140,76 @@
 	</header>
 
 	{#if $loading}
-		<div class="flex flex-col items-center justify-center gap-4 py-24">
-			<div class="pulse-glow h-12 w-12 animate-spin rounded-full border-[3px] border-accent/30 border-t-accent"></div>
-			<p class="text-sm text-text-secondary">Fetching weather data...</p>
+		<div class="grid gap-6 md:grid-cols-2">
+			<!-- CurrentWeather skeleton -->
+			<div class="glass-card flex flex-col gap-4 p-4 sm:p-6">
+				<div class="flex items-center gap-2">
+					<div class="skeleton h-4 w-4 rounded-full"></div>
+					<div class="skeleton h-4 w-40 rounded"></div>
+					<div class="skeleton ml-auto h-6 w-20 rounded-lg"></div>
+				</div>
+				<div class="flex items-center gap-4">
+					<div class="skeleton h-16 w-16 rounded-xl"></div>
+					<div class="flex flex-col gap-2">
+						<div class="skeleton h-12 w-36 rounded"></div>
+						<div class="skeleton h-4 w-24 rounded"></div>
+					</div>
+				</div>
+				<div class="grid grid-cols-2 gap-3 sm:grid-cols-5">
+					{#each Array(5) as _}
+						<div class="skeleton h-16 rounded-xl"></div>
+					{/each}
+				</div>
+			</div>
+			<!-- WeatherMap skeleton -->
+			<div class="skeleton glass-card min-h-[220px] rounded-2xl"></div>
+		</div>
+		<div class="mt-6 grid gap-6 md:grid-cols-2">
+			<!-- SunArc skeleton -->
+			<div class="glass-card flex flex-col gap-3 p-3 sm:p-4">
+				<div class="flex items-center gap-2">
+					<div class="skeleton h-5 w-5 rounded-full"></div>
+					<div class="skeleton h-4 w-16 rounded"></div>
+				</div>
+				<div class="skeleton h-16 rounded-lg"></div>
+			</div>
+			<!-- AirQuality skeleton -->
+			<div class="glass-card flex flex-col gap-3 p-3 sm:p-4">
+				<div class="flex items-center gap-2">
+					<div class="skeleton h-5 w-5 rounded-full"></div>
+					<div class="skeleton h-4 w-24 rounded"></div>
+				</div>
+				<div class="skeleton h-8 rounded-lg"></div>
+			</div>
+		</div>
+		<div class="mt-6">
+			<!-- HourlyForecast skeleton -->
+			<div class="glass-card p-4 sm:p-6">
+				<div class="mb-4 flex items-center gap-2">
+					<div class="skeleton h-5 w-5 rounded-full"></div>
+					<div class="skeleton h-4 w-36 rounded"></div>
+				</div>
+				<div class="flex gap-2 overflow-hidden">
+					{#each Array(8) as _}
+						<div class="skeleton h-20 min-w-[68px] rounded-xl"></div>
+					{/each}
+				</div>
+			</div>
+		</div>
+		<div class="mt-6">
+			<!-- ForecastChart skeleton -->
+			<div class="glass-card p-4 sm:p-6">
+				<div class="mb-4 flex items-center gap-2">
+					<div class="skeleton h-5 w-5 rounded-full"></div>
+					<div class="skeleton h-4 w-28 rounded"></div>
+				</div>
+				<div class="skeleton mb-5 grid grid-cols-7 gap-2">
+					{#each Array(7) as _}
+						<div class="skeleton h-20 rounded-xl"></div>
+					{/each}
+				</div>
+				<div class="skeleton h-52 rounded-xl sm:h-72"></div>
+			</div>
 		</div>
 	{:else if $error}
 		<div class="glass-card animate-fade-in mx-auto max-w-md p-6 text-center">

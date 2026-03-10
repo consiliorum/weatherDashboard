@@ -160,6 +160,24 @@ body {
 .stagger-children > *:nth-child(4) { animation-delay: 240ms; }
 .stagger-children > *:nth-child(5) { animation-delay: 320ms; }
 
+/* Skeleton shimmer */
+@keyframes shimmer {
+	0% { background-position: -200% 0; }
+	100% { background-position: 200% 0; }
+}
+
+.skeleton {
+	background: linear-gradient(
+		90deg,
+		var(--theme-bg-card) 25%,
+		var(--theme-bg-card-hover) 50%,
+		var(--theme-bg-card) 75%
+	);
+	background-size: 200% 100%;
+	animation: shimmer 1.6s ease-in-out infinite;
+	border-radius: 0.5rem;
+}
+
 /* Pulse glow for loading */
 @keyframes pulseGlow {
 	0%, 100% { box-shadow: 0 0 0 0 var(--theme-accent-glow); }

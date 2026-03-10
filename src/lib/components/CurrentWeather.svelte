@@ -5,7 +5,7 @@
 	import WeatherIcon from './WeatherIcon.svelte';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
-	import { unitSystem, convertTemp, tempUnit, convertSpeed, speedUnit } from '$lib/stores/units';
+	import { unitSystem, convertTemp, tempUnit, convertSpeed, speedUnit, convertPrecip } from '$lib/stores/units';
 
 	const weather = $derived($weatherData?.current);
 	const location = $derived($selectedLocation);
@@ -102,7 +102,7 @@
 			</div>
 		</div>
 
-		<div class="mt-auto grid grid-cols-2 gap-3 sm:grid-cols-4">
+		<div class="mt-auto grid grid-cols-2 gap-3 sm:grid-cols-5">
 			<div class="rounded-xl bg-bg-card p-3 transition-colors hover:bg-bg-card-hover">
 				<div class="mb-1 flex items-center gap-1.5">
 					<svg class="h-3.5 w-3.5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -142,6 +142,16 @@
 					{weather.uv_index}
 					<span class="text-xs font-normal {uvLevel().color}">{uvLevel().label}</span>
 				</p>
+			</div>
+			<div class="rounded-xl bg-bg-card p-3 transition-colors hover:bg-bg-card-hover">
+				<div class="mb-1 flex items-center gap-1.5">
+					<svg class="h-3.5 w-3.5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<path d="M12 21C12 21 4.5 13.5 4.5 9a7.5 7.5 0 1 1 15 0c0 4.5-7.5 12-7.5 12Z" stroke-linecap="round" stroke-linejoin="round"/>
+						<circle cx="12" cy="9" r="1.5" fill="currentColor" stroke="none"/>
+					</svg>
+					<p class="text-xs text-text-muted">Precip.</p>
+				</div>
+				<p class="text-lg font-semibold">{convertPrecip($weatherData?.daily.precipitation_sum[0] ?? 0, $unitSystem)}</p>
 			</div>
 		</div>
 	</div>
