@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { selectedLocation, weatherData, loadWeather } from '$lib/stores/weather';
+	import { selectedLocation, loadWeather } from '$lib/stores/weather';
 	import { theme } from '$lib/stores/theme';
-	import { getWeatherInfo } from '$lib/utils/weatherCodes';
 	import type { Map, Marker, TileLayer } from 'leaflet';
 
 	let mapContainer: HTMLDivElement;
@@ -75,19 +74,10 @@
 
 	$effect(() => {
 		const loc = $selectedLocation;
-		const weather = $weatherData;
-		if (loc && map && marker && L) {
-			const pos: [number, number] = [loc.latitude, loc.longitude];
-			map.setView(pos, 10);
-			marker.setLatLng(pos);
-
-			if (weather) {
-				const info = getWeatherInfo(weather.current.weather_code);
-				marker.bindPopup(
-					`<strong>${loc.name}</strong><br>${info.icon} ${Math.round(weather.current.temperature_2m)}°C<br>${info.description}`
-				).openPopup();
-			}
-		}
+		if (!loc || !map || !marker) return;
+		const pos: [number, number] = [loc.latitude, loc.longitude];
+		map.setView(pos, 10);
+		marker.setLatLng(pos);
 	});
 </script>
 

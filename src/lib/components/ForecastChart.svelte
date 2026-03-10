@@ -48,6 +48,15 @@
 		const units = $unitSystem;
 		const tUnit = tempUnit(units);
 
+		const allTemps = [
+			...daily.temperature_2m_max.map((t) => convertTemp(t, units)),
+			...daily.temperature_2m_min.map((t) => convertTemp(t, units))
+		];
+		const rawMin = Math.min(...allTemps);
+		const rawMax = Math.max(...allTemps);
+		const yMin = rawMin - (rawMin % 2 !== 0 ? 1 : 2);
+		const yMax = rawMax + (rawMax % 2 !== 0 ? 1 : 2);
+
 		chart = new Chart(canvas, {
 			type: 'line',
 			data: {
@@ -76,8 +85,8 @@
 						pointHoverRadius: 6,
 						tension: 0.4,
 						fill: false
-					}
-				]
+					},
+					]
 			},
 			options: {
 				responsive: true,
@@ -113,6 +122,8 @@
 						grid: { color: colors.grid }
 					},
 					y: {
+						min: yMin,
+						max: yMax,
 						ticks: {
 							color: colors.tick,
 							callback: (v) => v + tUnit,

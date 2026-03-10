@@ -12,6 +12,9 @@
 	import ForecastChart from '$lib/components/ForecastChart.svelte';
 	import HourlyForecast from '$lib/components/HourlyForecast.svelte';
 	import WeatherMap from '$lib/components/WeatherMap.svelte';
+	import SunArc from '$lib/components/SunArc.svelte';
+	import AirQuality from '$lib/components/AirQuality.svelte';
+	import WeatherIcon from '$lib/components/WeatherIcon.svelte';
 
 	let shared = $state(false);
 
@@ -63,15 +66,13 @@
 		<div class="flex items-center justify-between">
 			<div class="flex items-center gap-3">
 				<div class="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/10 text-xl sm:h-10 sm:w-10 sm:text-2xl">
-					<span>
-						{#if $weatherData}
-							{@const code = $weatherData.current.weather_code}
-							{@const night = $weatherData.daily.sunrise[0] ? isNightAt($weatherData.timezone, $weatherData.daily.sunrise[0], $weatherData.daily.sunset[0]) : false}
-							{#if code === 0}{night ? "🌙" : "☀️"}{:else if code <= 3}{night ? "🌙" : "⛅"}{:else}&#127326;&#65039;{/if}
-						{:else}
-							&#127780;&#65039;
-						{/if}
-					</span>
+					{#if $weatherData}
+						{@const code = $weatherData.current.weather_code}
+						{@const night = $weatherData.daily.sunrise[0] ? isNightAt($weatherData.timezone, $weatherData.daily.sunrise[0], $weatherData.daily.sunset[0]) : false}
+						<WeatherIcon {code} isNight={night} />
+					{:else}
+						<span>&#127780;&#65039;</span>
+					{/if}
 				</div>
 				<h1 class="text-xl font-bold tracking-tight text-text-primary sm:text-2xl">
 					Weather<span class="text-accent">Dashboard</span>
@@ -153,6 +154,10 @@
 		<div class="stagger-children grid gap-6 md:grid-cols-2">
 			<CurrentWeather />
 			<WeatherMap />
+		</div>
+		<div class="mt-6 animate-fade-in stagger-children grid gap-6 md:grid-cols-2" style="animation-delay: 150ms;">
+			<SunArc />
+			<AirQuality />
 		</div>
 		<div class="mt-6 animate-fade-in" style="animation-delay: 200ms;">
 			<HourlyForecast />
