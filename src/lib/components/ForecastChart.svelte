@@ -63,8 +63,9 @@
 		];
 		const rawMin = Math.min(...allTemps);
 		const rawMax = Math.max(...allTemps);
-		const yMin = rawMin - (rawMin % 2 !== 0 ? 1 : 2);
-		const yMax = rawMax + (rawMax % 2 !== 0 ? 1 : 2);
+		const step = units === 'imperial' ? 5 : 2;
+		const yMin = Math.floor(rawMin / step) * step - step;
+		const yMax = Math.ceil(rawMax / step) * step + step;
 
 		chart = new Chart(canvas, {
 			type: 'line',

@@ -5,7 +5,7 @@
 	import WeatherIcon from './WeatherIcon.svelte';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
-	import { unitSystem, convertTemp, tempUnit, convertSpeed, speedUnit, convertPrecip } from '$lib/stores/units';
+	import { unitSystem, convertTemp, tempUnit, convertSpeed, speedUnit } from '$lib/stores/units';
 
 	const weather = $derived($weatherData?.current);
 	const location = $derived($selectedLocation);
@@ -146,12 +146,12 @@
 			<div class="rounded-xl bg-bg-card p-3 transition-colors hover:bg-bg-card-hover">
 				<div class="mb-1 flex items-center gap-1.5">
 					<svg class="h-3.5 w-3.5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-						<path d="M12 21C12 21 4.5 13.5 4.5 9a7.5 7.5 0 1 1 15 0c0 4.5-7.5 12-7.5 12Z" stroke-linecap="round" stroke-linejoin="round"/>
-						<circle cx="12" cy="9" r="1.5" fill="currentColor" stroke="none"/>
+						<path d="M4.5 10.5a6 6 0 0 1 11.84-1.5H17a4.5 4.5 0 0 1 0 9H6.75A4.5 4.5 0 0 1 4.5 10.5Z" stroke-linecap="round" stroke-linejoin="round"/>
+						<path d="M8.25 18v1.5m3.75-3v3m3.75-1.5v1.5" stroke-linecap="round"/>
 					</svg>
 					<p class="text-xs text-text-muted">Precip.</p>
 				</div>
-				<p class="text-lg font-semibold">{convertPrecip($weatherData?.daily.precipitation_sum[0] ?? 0, $unitSystem)}</p>
+				<p class="text-lg font-semibold">{$weatherData?.daily.precipitation_probability_max[0] ?? 0}<span class="text-sm text-text-secondary">%</span></p>
 			</div>
 		</div>
 	</div>

@@ -54,22 +54,7 @@
 		return path;
 	});
 
-	const fillPath = $derived.by(() => {
-		const steps = Math.max(2, Math.round(STEPS * (ssMins - srMins) / 1440));
-		const xSr = (srMins / 1440) * W;
-		const xSs = (ssMins / 1440) * W;
-		let path = `M ${xSr.toFixed(1)} ${midY}`;
-		for (let i = 1; i <= steps; i++) {
-			const t = srMins + (i / steps) * (ssMins - srMins);
-			const x = (t / 1440) * W;
-			const y = midY - amp * sy(t, srMins, ssMins);
-			path += ` L ${x.toFixed(1)} ${y.toFixed(1)}`;
-		}
-		path += ` L ${xSs.toFixed(1)} ${midY} Z`;
-		return path;
-	});
-
-	const srX   = $derived((srMins / 1440) * W);
+const srX   = $derived((srMins / 1440) * W);
 	const ssX   = $derived((ssMins / 1440) * W);
 	const nowX  = $derived((nowMins / 1440) * W);
 	const nowY  = $derived(midY - amp * sy(nowMins, srMins, ssMins));

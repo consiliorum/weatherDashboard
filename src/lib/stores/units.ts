@@ -36,8 +36,3 @@ export function convertSpeed(kmh: number, system: UnitSystem): number {
 export function speedUnit(system: UnitSystem): string {
 	return system === 'imperial' ? 'mph' : 'km/h';
 }
-
-export function convertPrecip(mm: number, system: UnitSystem): string {
-	if (system === 'imperial') return (mm / 25.4).toFixed(2) + ' in';
-	return mm.toFixed(1) + ' mm';
-}
