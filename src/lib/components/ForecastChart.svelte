@@ -28,12 +28,12 @@
 	function getChartColors(t: string) {
 		const isDark = t === 'dark';
 		return {
-			tick: isDark ? '#64748b' : '#64748b',
-			grid: isDark ? 'rgba(148, 163, 184, 0.06)' : 'rgba(148, 163, 184, 0.15)',
-			legendText: isDark ? '#94a3b8' : '#475569',
-			tooltipBg: isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-			tooltipTitle: isDark ? '#f1f5f9' : '#0f172a',
-			tooltipBody: isDark ? '#94a3b8' : '#475569',
+			tick:          isDark ? '#64748b' : '#64748b',
+			grid:          isDark ? 'rgba(148, 163, 184, 0.06)' : 'rgba(148, 163, 184, 0.15)',
+			legendText:    isDark ? '#94a3b8' : '#475569',
+			tooltipBg:     isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+			tooltipTitle:  isDark ? '#f1f5f9' : '#0f172a',
+			tooltipBody:   isDark ? '#94a3b8' : '#475569',
 			tooltipBorder: isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(148, 163, 184, 0.25)'
 		};
 	}
@@ -43,10 +43,19 @@
 
 		if (chart) chart.destroy();
 
-		const labels = daily.time.map(formatDay);
-		const colors = getChartColors($theme);
-		const units = $unitSystem;
-		const tUnit = tempUnit(units);
+		const isMobile   = window.innerWidth < 640;
+		const labels     = daily.time.map((d) =>
+			isMobile
+				? new Date(d + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short' })
+				: formatDay(d)
+		);
+		const colors     = getChartColors($theme);
+		const units      = $unitSystem;
+		const tUnit      = tempUnit(units);
+		const tickSize   = isMobile ? 10 : 11;
+		const legendSize = isMobile ? 10 : 12;
+		const ptRadius   = isMobile ? 3 : 4;
+		const ptHover    = isMobile ? 5 : 6;
 
 		const allTemps = [
 			...daily.temperature_2m_max.map((t) => convertTemp(t, units)),
@@ -69,8 +78,8 @@
 						backgroundColor: 'rgba(251, 146, 60, 0.15)',
 						borderWidth: 2,
 						pointBackgroundColor: 'rgba(251, 146, 60, 0.9)',
-						pointRadius: 4,
-						pointHoverRadius: 6,
+						pointRadius: ptRadius,
+						pointHoverRadius: ptHover,
 						tension: 0.4,
 						fill: false
 					},
@@ -81,12 +90,12 @@
 						backgroundColor: 'rgba(56, 189, 248, 0.1)',
 						borderWidth: 2,
 						pointBackgroundColor: 'rgba(56, 189, 248, 0.9)',
-						pointRadius: 4,
-						pointHoverRadius: 6,
+						pointRadius: ptRadius,
+						pointHoverRadius: ptHover,
 						tension: 0.4,
 						fill: false
-					},
-					]
+					}
+				]
 			},
 			options: {
 				responsive: true,
@@ -97,8 +106,8 @@
 							color: colors.legendText,
 							usePointStyle: true,
 							pointStyle: 'rectRounded',
-							padding: 20,
-							font: { size: 12, family: 'Inter' }
+							padding: isMobile ? 12 : 20,
+							font: { size: legendSize, family: 'Inter' }
 						}
 					},
 					tooltip: {
@@ -118,7 +127,7 @@
 				},
 				scales: {
 					x: {
-						ticks: { color: colors.tick, font: { size: 11, family: 'Inter' } },
+						ticks: { color: colors.tick, font: { size: tickSize, family: 'Inter' } },
 						grid: { color: colors.grid }
 					},
 					y: {
@@ -127,7 +136,7 @@
 						ticks: {
 							color: colors.tick,
 							callback: (v) => v + tUnit,
-							font: { size: 11, family: 'Inter' }
+							font: { size: tickSize, family: 'Inter' }
 						},
 						grid: { color: colors.grid }
 					}
@@ -138,6 +147,8 @@
 
 	onMount(() => {
 		renderChart();
+		window.addEventListener('resize', renderChart);
+		return () => window.removeEventListener('resize', renderChart);
 	});
 
 	$effect(() => {
@@ -156,21 +167,21 @@
 
 		<div class="custom-scrollbar mb-5 flex gap-2 overflow-x-auto pb-2 sm:grid sm:grid-cols-7 sm:overflow-visible sm:pb-0">
 			{#each daily.time as day, i}
-				<div class="flex min-w-[52px] shrink-0 flex-col items-center gap-1 rounded-xl px-1 py-3 transition-colors sm:min-w-0 {isToday(day) ? 'bg-accent/10 ring-1 ring-accent/30' : 'bg-bg-card hover:bg-bg-card-hover'}">
+				<div class="flex min-w-[64px] shrink-0 flex-col items-center gap-1 rounded-xl px-2 py-3 transition-colors sm:min-w-0 {isToday(day) ? 'bg-accent/10 ring-1 ring-accent/30' : 'bg-bg-card hover:bg-bg-card-hover'}">
 					<span class="text-xs font-medium {isToday(day) ? 'text-accent' : 'text-text-muted'}">
 						{isToday(day) ? 'Today' : formatDay(day).split(',')[0]}
 					</span>
 					<span class="text-xl sm:text-2xl"><WeatherIcon code={daily.weather_code[i]} /></span>
 					<div class="flex flex-col items-center sm:flex-row sm:gap-1">
-						<span class="text-[10px] text-text-secondary sm:text-xs">{convertTemp(daily.temperature_2m_min[i], $unitSystem)}°</span>
+						<span class="text-[11px] text-text-secondary sm:text-xs">{convertTemp(daily.temperature_2m_min[i], $unitSystem)}°</span>
 						<span class="hidden text-xs text-text-muted sm:inline">/</span>
-						<span class="text-[10px] font-semibold text-warm sm:text-xs">{convertTemp(daily.temperature_2m_max[i], $unitSystem)}°</span>
+						<span class="text-[11px] font-semibold text-warm sm:text-xs">{convertTemp(daily.temperature_2m_max[i], $unitSystem)}°</span>
 					</div>
-					</div>
+				</div>
 			{/each}
 		</div>
 
-		<div class="h-44 sm:h-56">
+		<div class="h-52 sm:h-72">
 			<canvas bind:this={canvas}></canvas>
 		</div>
 	</div>

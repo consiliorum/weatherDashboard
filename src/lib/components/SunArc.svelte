@@ -99,9 +99,9 @@
 				fill={isDay ? '#fbbf24' : '#94a3b8'}/>
 
 			<!-- Time labels at intersections -->
-			<text x={srX} y={midY + 12} text-anchor="middle" font-size="7.5"
+			<text x={srX} y={midY + 12} text-anchor="middle" font-size="9"
 				fill="currentColor" opacity="0.45">{srLabel}</text>
-			<text x={ssX} y={midY + 12} text-anchor="middle" font-size="7.5"
+			<text x={ssX} y={midY + 12} text-anchor="middle" font-size="9"
 				fill="currentColor" opacity="0.45">{ssLabel}</text>
 		</svg>
 	</div>

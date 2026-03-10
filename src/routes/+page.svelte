@@ -99,7 +99,7 @@
 			<SearchBar />
 			<button
 				onclick={toggleUnits}
-				class="flex h-10 items-center justify-center rounded-xl border border-glass-border bg-bg-secondary px-3 text-sm font-medium text-text-secondary backdrop-blur-xl transition-all duration-300 hover:border-glass-border-light hover:text-accent hover:shadow-lg"
+				class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-glass-border bg-bg-secondary text-sm font-medium text-text-secondary backdrop-blur-xl transition-all duration-300 hover:border-glass-border-light hover:text-accent hover:shadow-lg"
 				title="Toggle units"
 			>
 				{$unitSystem === 'metric' ? '°C' : '°F'}
@@ -107,7 +107,7 @@
 			<button
 				onclick={shareLocation}
 				disabled={!$selectedLocation}
-				class="flex h-10 w-10 items-center justify-center rounded-xl border border-glass-border bg-bg-secondary backdrop-blur-xl transition-all duration-300 hover:border-glass-border-light hover:shadow-lg disabled:opacity-40"
+				class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-glass-border bg-bg-secondary backdrop-blur-xl transition-all duration-300 hover:border-glass-border-light hover:shadow-lg disabled:opacity-40"
 				title="Copy shareable link"
 			>
 				{#if shared}
@@ -122,7 +122,7 @@
 			</button>
 			<button
 				onclick={toggleTheme}
-				class="hidden h-10 w-10 items-center justify-center rounded-xl border border-glass-border bg-bg-secondary backdrop-blur-xl transition-all duration-300 hover:border-glass-border-light hover:shadow-lg sm:flex"
+				class="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-glass-border bg-bg-secondary backdrop-blur-xl transition-all duration-300 hover:border-glass-border-light hover:shadow-lg sm:flex"
 				aria-label="Toggle theme"
 			>
 				{#if $theme === 'dark'}

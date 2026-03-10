@@ -92,7 +92,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="glass-card relative overflow-hidden" onclick={isMobile && !mapInteractive ? enableMapInteraction : undefined}>
-	<div bind:this={mapContainer} class="h-[280px] w-full transition-colors duration-300 sm:h-[400px]" style="background-color: var(--theme-map-bg);"></div>
+	<div bind:this={mapContainer} class="h-[260px] w-full transition-colors duration-300 sm:h-[340px] lg:h-[420px]" style="background-color: var(--theme-map-bg);"></div>
 	{#if isMobile && !mapInteractive}
 		<div class="pointer-events-none absolute inset-0 z-[500] flex items-center justify-center">
 			<span class="rounded-full bg-black/50 px-4 py-2 text-xs font-medium text-white backdrop-blur-sm">
