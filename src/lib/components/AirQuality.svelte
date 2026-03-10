@@ -35,7 +35,7 @@
 		{/if}
 	</div>
 
-	<div class="flex flex-1 items-center pt-6">
+	<div class="flex flex-1 items-center">
 		{#if loading}
 			<div class="flex w-full justify-center">
 				<div class="h-5 w-5 animate-spin rounded-full border-2 border-accent/30 border-t-accent"></div>
@@ -46,7 +46,7 @@
 			<div class="w-full">
 				<div class="relative h-1.5 overflow-visible rounded-full"
 					style="background:linear-gradient(to right,#38bdf8,#4ade80,#fbbf24,#fb923c,#f87171,#818cf8)">
-					<div class="absolute top-1/2 h-3 w-0.5 -translate-y-1/2 rounded-full bg-white shadow"
+					<div class="absolute top-1/2 h-3 w-1 -translate-y-1/2 rounded-full bg-white shadow"
 						style="left:calc({barPct}% - 1px)">
 					</div>
 				</div>

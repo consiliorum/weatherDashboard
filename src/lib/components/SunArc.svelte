@@ -85,7 +85,7 @@
 			<h3 class="text-base font-semibold">Sun</h3>
 		</div>
 
-		<svg viewBox="0 0 200 50" class="w-full overflow-visible">
+		<svg viewBox="0 0 200 58" class="w-full overflow-visible">
 			<!-- Horizon -->
 			<line x1="0" y1={midY} x2={W} y2={midY}
 				stroke="currentColor" stroke-width="0.5" opacity="0.15"/>
@@ -99,9 +99,9 @@
 				fill={isDay ? '#fbbf24' : '#94a3b8'}/>
 
 			<!-- Time labels at intersections -->
-			<text x={srX} y={midY + 12} text-anchor="middle" font-size="9"
+			<text x={srX} y={midY + 19} text-anchor="middle" font-size="9"
 				fill="currentColor" opacity="0.45">{srLabel}</text>
-			<text x={ssX} y={midY + 12} text-anchor="middle" font-size="9"
+			<text x={ssX} y={midY + 19} text-anchor="middle" font-size="9"
 				fill="currentColor" opacity="0.45">{ssLabel}</text>
 		</svg>
 	</div>
